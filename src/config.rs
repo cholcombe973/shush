@@ -64,7 +64,7 @@ fn sub_or_rest(input: &str) -> IResult<&str, String> {
 
 fn substitute_vars(input: &str) -> IResult<&str, String> {
     let (mut i, mut o) = sub_or_rest(input)?;
-    while i.len() > 0 {
+    while !i.is_empty() {
         let (loop_i, loop_o) = sub_or_rest(i)?;
         i = loop_i;
         o += &loop_o;

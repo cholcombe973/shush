@@ -108,11 +108,11 @@ impl<'a> Args<'a> {
         let clearopts = |matches: &ArgMatches, res_arg, res_type| {
             ShushOpts::Clear(ClearOpts {
                 resources: matches.value_of(res_arg).map(|st| ShushResources {
-                    resources: st.split(",").map(|s| s.to_string()).collect(),
+                    resources: st.split(',').map(|s| s.to_string()).collect(),
                     res_type,
                 }),
                 checks: matches.value_of("checks")
-                    .map(|st| st.split(",").map(|s| s.to_string()).collect()),
+                    .map(|st| st.split(',').map(|s| s.to_string()).collect()),
             })
         };
 
@@ -125,24 +125,24 @@ impl<'a> Args<'a> {
 
         let expiration = |matches: &ArgMatches| {
             get_expiration(matches.value_of("expire").map(|s| s.to_string())
-                           .unwrap_or("2h".to_string()),
+                           .unwrap_or_else(|| "2h".to_string()),
                            matches.is_present("expireonresolve"))
         };
 
         let silenceopts = |matches: &ArgMatches, res_arg, res_type| {
             ShushOpts::Silence(SilenceOpts {
                 resources: matches.value_of(res_arg).map(|st| ShushResources {
-                    resources: st.split(",").map(|s| s.to_string()).collect(),
+                    resources: st.split(',').map(|s| s.to_string()).collect(),
                     res_type,
                 }),
-                checks: matches.value_of("checks").map(|st| st.split(",")
+                checks: matches.value_of("checks").map(|st| st.split(',')
                                                        .map(|s| s.to_string()).collect()),
                 expire: expiration(matches),
             })
         };
 
         let matches = &self.0;
-        let shush_opts = if matches.is_present("nodes") {
+        if matches.is_present("nodes") {
             if matches.is_present("remove") {
                 clearopts(matches, "nodes", ShushResourceType::Node)
             } else if matches.is_present("list") {
@@ -184,8 +184,7 @@ impl<'a> Args<'a> {
                     expire: expiration(matches),
                 })
             }
-        };
-        shush_opts
+        }
     }
 
     pub fn get_match(&self, option: &str) -> Option<String> {
@@ -193,6 +192,6 @@ impl<'a> Args<'a> {
     }
 
     pub fn get_match_as_vec(&self, option: &str) -> Option<Vec<String>> {
-        self.0.value_of(option).map(|st| st.split(",").map(|s| s.to_string()).collect())
+        self.0.value_of(option).map(|st| st.split(',').map(|s| s.to_string()).collect())
     }
 }

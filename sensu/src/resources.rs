@@ -35,7 +35,7 @@ impl Display for ShushResources {
             ShushResourceType::Client => write!(f, "Sensu clients: ")?,
             ShushResourceType::Sub => write!(f, "Subscriptions: ")?,
         };
-        write!(f, "{}", if self.resources.len() > 0 {
+        write!(f, "{}", if !self.resources.is_empty() {
             self.resources.join(", ")
         } else {
             return Err(fmt::Error);

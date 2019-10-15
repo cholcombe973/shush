@@ -20,7 +20,7 @@ impl Into<Map<String, Value>> for SensuPayload {
         let mut payload = Map::new();
 
         // Always inject USER information into payload as creator field
-        let user = env::var("USER").unwrap_or("shush".to_string());
+        let user = env::var("USER").unwrap_or_else(|_| "shush".to_string());
         payload.insert("creator".to_string(), Value::String(user));
 
         // Handle subscription for payload as Sensu client value, subscription, or all

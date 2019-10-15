@@ -152,7 +152,7 @@ pub fn main() -> Result<(), Box<dyn Error>> {
     let shush_opts = shush_args.getopts();
     let shush_cfg = shush_args.getconf();
     
-    let mut client = SensuClient::new(shush_cfg.get("api").unwrap_or(String::new()))?;
+    let mut client = SensuClient::new(shush_cfg.get("api").unwrap_or_default())?;
 
     match shush_opts {
         ShushOpts::Silence(s) => client.silence(s)?,

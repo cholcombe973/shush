@@ -45,7 +45,7 @@ impl SensuClient {
         U: TryInto<Uri>,
         U::Error: Display,
     {
-        let mut full_uri = uri.try_into().map_err(|e| SensuError::new_string(e))?;
+        let mut full_uri = uri.try_into().map_err(SensuError::new_string)?;
         let map: Option<Map<String, Value>> = body.map(|b| b.into());
         if full_uri.authority_part().is_none() {
             let mut parts = full_uri.into_parts();
@@ -77,14 +77,14 @@ impl SensuClient {
         self.1.block_on(
             self.0
                 .request(req)
-                .map_err(|e| SensuError::from(e))
+                .map_err(SensuError::from)
                 .and_then(|resp| {
                     if resp.status() == StatusCode::NOT_FOUND {
                         return Err(SensuError::not_found());
                     }
                     Ok(resp)
                 })
-                .and_then(|resp| resp.into_body().concat2().map_err(|e| SensuError::from(e)))
+                .and_then(|resp| resp.into_body().concat2().map_err(SensuError::from))
                 .and_then(|chunk| {
                     if chunk.len() < 1 {
                         return Ok(None);
@@ -192,9 +192,9 @@ impl SensuClient {
     fn validate_client(&mut self, client_name: &str) -> bool {
         let resp = self.request(Method::GET, SensuEndpoint::Client(client_name), None);
         if let Err(SensuError::NotFound) = resp {
-            return false;
+            false
         } else {
-            return true;
+            true
         }
     }
 
@@ -225,7 +225,7 @@ impl SensuClient {
                         .and_then(|subs| subs.as_array())
                         .map(|arr| {
                             let v: Vec<String> = arr
-                                .into_iter()
+                                .iter()
                                 .filter_map(|s| s.as_str().map(|st| st.to_string()))
                                 .collect();
                             v
@@ -464,7 +464,7 @@ impl SensuClient {
         println!("Active silences:");
         let resp = self.request(Method::GET, SensuEndpoint::Silenced, None)?;
         if let Some(Value::Array(v)) = resp {
-            if v.len() == 0 {
+            if v.is_empty() {
                 println!("\tNo silences");
                 return Ok(());
             }
