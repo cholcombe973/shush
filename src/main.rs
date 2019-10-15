@@ -135,21 +135,16 @@ extern crate tokio;
 
 extern crate serde_json;
 
-#[macro_use]
-extern crate itertools;
 extern crate ini;
 extern crate nom;
 
 mod config;
 mod err;
 mod opts;
-mod resources;
-mod sensu;
 
 use std::error::Error;
 
-use opts::ShushOpts;
-use sensu::SensuClient;
+use sensu::{client::SensuClient, opts::ShushOpts};
 
 /// Main function - handle arg parsing and all executable actions
 pub fn main() -> Result<(), Box<dyn Error>> {

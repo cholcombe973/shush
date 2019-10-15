@@ -5,31 +5,12 @@ use std::process;
 use clap::{App,Arg,ArgMatches};
 use regex::Regex;
 
-use config::ShushConfig;
-use resources::{ShushResources,ShushResourceType};
-use sensu::Expire;
-
-pub struct SilenceOpts {
-    pub resources: Option<ShushResources>,
-    pub checks: Option<Vec<String>>,
-    pub expire: Expire,
-}
-
-pub struct ClearOpts {
-    pub resources: Option<ShushResources>,
-    pub checks: Option<Vec<String>>,
-}
-
-pub struct ListOpts {
-    pub sub: Option<String>,
-    pub chk: Option<String>,
-}
-
-pub enum ShushOpts {
-    Silence(SilenceOpts),
-    Clear(ClearOpts),
-    List(ListOpts),
-}
+use crate::config::ShushConfig;
+use sensu::resources::{ShushResources,ShushResourceType};
+use sensu::{
+    opts::{ClearOpts, ShushOpts, SilenceOpts, ListOpts}, 
+    expire::Expire
+};
 
 pub fn get_expiration(expire: String, expire_on_resolve: bool) -> Expire {
     if expire.as_str() == "none" {

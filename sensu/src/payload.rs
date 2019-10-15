@@ -2,7 +2,7 @@ use std::env;
 
 use serde_json::{Value,Map,Number};
 
-use super::Expire;
+use crate::expire::Expire;
 
 /// Generic struct for any Sensu payload - can be used for clear or silence
 #[derive(Debug)]
